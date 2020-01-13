@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Aidar Sinetov</title>
+    <style type="text/css">
+        body {
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            margin: 0;
+            background-image: url("background.jpg");
+            background-size: cover;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 0;
+            background: rgba(191, 82, 155, 0.4);
+            top: -7px;
+        }
+
+        #tr1 {
+            font-size: 200%;
+            font-family: Monotype Corsiva, monospace;
+            font-style: italic;
+            font-weight: bold;
+            background-color: darkorchid;
+
+        }
+
+        img {
+            border-radius: 4px;
+        }
+
+        input[type=button]:hover {
+            background-color: indigo;
+            color: white;
+
+        }
+
+        input[type=button] {
+            border-radius: 4px;
+            border: none;
+            font-style: italic;
+            font-family: serif;
+            font-size: 15px;
+            width: 100%;
+        }
+
+        #tr1 th {
+            height: 30px;
+            padding: 10px
+        }
+
+        td {
+            vertical-align: top;
+            padding: 5px;
+        }
+
+    </style>
+    <script type="text/javascript" src="jquery-3.4.1.js"></script>
+    <script type="text/javascript" id="js1">
+
+
+        $(document).ready(function () {
+            firstTime();
+
+            $('#form').keydown(function (event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    onClick();
+                    return false;
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+<table class="table" id="mainTable">
+    <tr id="tr1">
+        <th colspan="2" width="45%" align="left">
+            Вариант 213018
+        </th>
+        <th align="right">
+            Синетов Айдар, P3213
+        </th>
+    </tr>
+    <tr>
+        <td width="35%">
+            <img src="schedule.jpg" alt="Упс... Изображение потеряно.((" height="500" border="3">
+        </td>
+        <td style="line-height: 2;align: left">
+            <form id="form" autocomplete="off">
+                <strong>X: </strong>
+                <select id="selectX" form="form" required name="X">
+                    <option value="-4">-4</option>
+                    <option value="-3">-3</option>
+                    <option value="-2">-2</option>
+                    <option value="-1">-1</option>
+                    <option value="0" selected>0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select><br>
+                <strong>R: </strong>
+                <select id="selectR" form="form" required name="R">
+                    <option value="1" selected>1</option>
+                    <option value="1.5">1.5</option>
+                    <option value="2">2</option>
+                    <option value="2.5">2.5</option>
+                    <option value="3">3</option>
+                </select><br>
+                <strong>Y: </strong>
+                <input type="text" id="inputY" style="width:83%" placeholder="(-5...3)" name="Y"><br>
+                <input type="button" value="Проверить" onclick="onClick()">
+            </form>
+        </td>
+        <td style=" display: block; overflow-y: auto; height: 500px" id="cellWithCheckTable">
+            <table id="CheckTable" class="table"
+                   style="background-color: brown; width: 100%; table-layout: fixed; word-break: break-all">
+                <tr>
+                    <th width="8%">
+                        X
+                    </th>
+                    <th width="14%">
+                        Y
+                    </th>
+                    <th width="8%">
+                        R
+                    </th>
+                    <td width="28%" id="time" align="center">
+                        <strong>Time</strong>
+                    </td>
+                    <th width="10%">
+                        Check
+                    </th>
+                    <th width="32%">
+                        Script time
+                    </th>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    function onClick() {
+        let X = document.getElementById('selectX');
+        X = X.options[X.selectedIndex].value;
+        let R = document.getElementById('selectR');
+        R = R.options[R.selectedIndex].value;
+        let Y = $('#inputY').val();
+        Y = Y.replace(/\s/g, "");
+        if (Y == "") {
+            fadedLine(400, "Не введено значение Y");
+            return;
+        }
+        if (isNaN(Y) == true) {
+            fadedLine(400, "Не правильный формат задания Y! Y может быть только числом в интервале от -5 до 3 : Y "
+                + String.fromCharCode(1108) + " (-5;3).");
+            return;
+        }
+        if (!(Y.valueOf() < 3) || !(Y.valueOf() > -5)) {
+            fadedLine(400, "Y должен находиться в интервале от -5 до 3 : Y " + String.fromCharCode(1108) + " (-5;3)")
+            return;
+        }
+        let lines = document.getElementById("CheckTable").querySelectorAll("tr");
+        let quantityOfLines = lines.length;
+        let event=new Event("goEnd");
+        $("#CheckTable").on("goEnd", function (event) {
+            let linesQuantity=document.getElementById("CheckTable").querySelectorAll("tr").length;
+            $("#cellWithCheckTable").scrollTop(linesQuantity[linesQuantity.length-1].clientHeight)
+        });
+        $.get("checkPoints.php",
+            //data
+            {"X": X, "Y": Y, "R": R},
+            //callback
+            function success(data) {
+                let checkTable = document.getElementById("CheckTable");
+                let table = document.createDocumentFragment();
+                let tr = document.createElement("tr");
+                tr.setAttribute("style", "text-align: center");
+                tr.innerHTML = "<td>" + X + "</td>" + "<td>" + Y + "</td>" + "<td>" + R + "</td>" + data;
+                table.appendChild(tr);
+                checkTable.appendChild(table);
+                let updatedQuantityOfLines = document.getElementById("CheckTable").querySelectorAll("tr").length;
+                if (updatedQuantityOfLines > quantityOfLines) {
+                    dispatchEvent(event);
+                }
+            }, "text"
+        )
+
+    }
+
+    function firstTime() {
+        let date = new Date();
+        let timezoneOffset = date.getTimezoneOffset();
+        $.get("time.php",
+            {"offset": timezoneOffset},
+            function success(data) {
+                let checkTable = document.getElementById("time");
+                checkTable.innerHTML += data;
+            }, "text");
+    }
+
+
+    function fadedLine(timeout, innerText) {
+        let table = document.getElementById("mainTable");
+        let line = document.createElement("tr");
+        let cell = document.createElement("td");
+        line.setAttribute("style", "background-color: red; text-align: center");
+        line.setAttribute("id", "alert")
+        cell.setAttribute("colspan", "3")
+        cell.innerText = innerText;
+        line.appendChild(cell);
+        table.appendChild(line);
+        setTimeout(function () {
+            $("#alert").fadeOut({
+                duration: timeout,
+                complete: function () {
+                    this.remove();
+                }
+            });
+        }, 8000)
+    }
+
+</script>
+</body>
+</html>
