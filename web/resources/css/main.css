@@ -1,0 +1,77 @@
+html{height: 100%; width: 100%}
+body {
+    margin: 0;
+    position: absolute;
+    background: rgba(191, 82, 155, 0.4) url("#{resource[ 'img/background.jpg' ]}") no-repeat fixed;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.table {
+    width: 100%;
+    height: 100%;
+    border-collapse: collapse;
+    margin-top: 0;
+    background: rgba(191, 82, 155, 0.4);
+    top: -7px;
+}
+
+#tr1 {
+    font-size: 200%;
+    font-family: Monotype Corsiva, monospace;
+    font-style: italic;
+    font-weight: bold;
+    background-color: darkorchid;
+
+}
+#clock{
+    font-size: 60px;
+    border-radius: 4px ;
+    border: 4px solid black;
+}
+#container{
+    position: absolute;
+    text-align: center;
+    width: 35%;
+    right: 0;
+    left: 0;
+    margin: auto;
+    background-color: white;
+    border-radius: 5px;
+}
+
+/*input[type=submit]:hover, button:hover {*/
+/*    background-color: indigo;*/
+/*    color: white;*/
+
+/*}*/
+.button{
+    position: absolute;
+    bottom: 0px;
+    margin-left: auto;
+
+}
+
+/*input[type=submit],button {*/
+/*    border-radius: 4px;*/
+/*    border: none;*/
+/*    font-style: italic;*/
+/*    font-family: serif;*/
+/*    margin:0 auto;*/
+/*}*/
+
+strong{
+    font-family:'Bell MT', sans-serif;
+}
+
+#tr1 th {
+    height: 30px;
+    padding: 10px
+}
+
+td {
+    vertical-align: top;
+    padding: 5px;
+    position: relative;
+}

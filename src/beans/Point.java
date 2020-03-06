@@ -2,30 +2,31 @@ package beans;
 
 
 public class Point {
-    private double x;
-    private double y;
-    private double r;
+    private Double x;
+    private Double y;
+    private Double r;
     private boolean isInArea;
 
     public Point() {
     }
 
-    public  Point(double x, double y, double r) {
+    public  Point(Double x, Double y, Double r) {
         this.x = x;
         this.y = y;
         this.r = r;
     }
 
     public boolean checkArea() {
-        if (y >= 0 && r >= y && x >= -r && x <= 0) {
+        //todo правильное попадание
+        if (y <= 0 && y>=-0.5*x-r/2 && x <= 0) {
             isInArea=true;
             return true;
         }
-        if (x >= 0 && y >= 0 && r / 2 - x / 2 >= y) {
+        if (x <= r/2 && x >= 0 && y>=0 && r >= y) {
             isInArea=true;
             return true;
         }
-        if (x <= 0 && 0 >= y && x*x+y*y <= (r*r)/4) {
+        if (y <= 0 && x >= 0 && x*x+y*y <= (r*r)) {
             isInArea=true;
             return true;
         }
@@ -34,19 +35,19 @@ public class Point {
     }
 
 
-    public double getX() {
+    public Double getX() {
         return x;
     }
 
-    public void setX(int x) {
+    public void setX(Double x) {
         this.x = x;
     }
 
-    public double getY() {
+    public Double getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(Double y) {
         this.y = y;
     }
 
@@ -61,11 +62,11 @@ public class Point {
     public void setInArea(boolean inArea) {
         isInArea = inArea;
     }
-    public double getR() {
+    public Double getR() {
         return r;
     }
 
-    public void setR(int r) {
+    public void setR(Double r) {
         this.r = r;
     }
 }

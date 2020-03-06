@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui" xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+    <h:outputStylesheet library="css" name="main.css"/>
+    <title>Aidar Sinetov</title>
+    <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+    <h:outputScript library="js" name="main.js"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"/>
+    <script type="text/javascript" id="js1" charset="UTF-8">
+        jQuery.noConflict();
+
+        $(document).ready(function ($) {
+            // Вы можете использовать $ в локальном
+            // контексте как псевдоним для jQuery.
+            $('#forma').keydown(function (event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    //validate();
+                    return false;
+                }
+            });
+            drawCanwas('canvas', 1);
+
+        });
+    </script>
+</h:head>
+<body>
+<table class="table" id="mainTable" border="1">
+    <tr id="tr1">
+        <th colspan="2" align="left" width="60%">
+            Вариант 213945
+        </th>
+        <th align="right">
+            Синетов Айдар, P3213
+        </th>
+    </tr>
+    <tr>
+        <td>
+            <canvas id="canvas"
+                    style="background-color:#ffffff;" width="700" height="500" onclick="onclickCanvas('canvas')">
+                Для того чтобы увидеть график откройте страницу в другом браузере
+            </canvas>
+            <h:form>
+                <p:commandButton value="Перейдти на стартовую страницу" action="clock?faces-redirect=true" outcome="main"
+                icon="pi pi-home"></p:commandButton>
+            </h:form>
+        </td>
+        <td>
+            <h:form id="forma">
+                <p:remoteCommand name="sendClick" action="#{pointsManager.addPointByClick()}" immediate="true"
+                                 process="@this" render="pointsData" update="pointsData" oncomplete="drawCanwas('canvas',checkedRadius)"/>
+                <p:remoteCommand name="sendToRedraw" action="#{pointsManager.redraw()}" immediate="true"
+                                 oncomplete="redrawPoint(xhr,status,args)" process="@this"/>
+                X:<p:inputNumber maxValue="5" minValue="-5" id="input-x" value="#{pointsManager.x}" required="true" >
+                    <f:validateDoubleRange maximum="5" minimum="-5"/>
+                </p:inputNumber>
+                <p:slider minValue="-5" maxValue="5" for="input-x"/><br/>
+                Y: <h:inputText value="#{pointsManager.y}" required="true" id="input-y"
+                                validatorMessage="Неверное значение y[-3;3]"
+                                requiredMessage="введите значение">
+                <f:validateDoubleRange maximum="3" minimum="-3"/>
+            </h:inputText><br/>
+                <h:message for="input-y" style="color:red"/>
+                R:
+                <h:commandButton value="1" onclick="drawCanwas('canvas',1);setR(1)" type="button">
+                </h:commandButton>
+                <h:commandButton value="2" onclick="drawCanwas('canvas',2);setR(2)" type="button">
+                </h:commandButton>
+                <h:commandButton value="3" onclick="drawCanwas('canvas',3);setR(3)" type="button">
+                </h:commandButton>
+                <h:commandButton value="4" onclick="drawCanwas('canvas',4);setR(4);" type="button">
+                </h:commandButton>
+                <h:commandButton value="5" onclick="drawCanwas('canvas',5);setR(5)" type="button">
+                </h:commandButton>
+                <h:inputHidden id="input-r" value="1"></h:inputHidden>
+                <br/>
+                <p:commandButton value="отправить" action="#{pointsManager.addThisPoint()}" immediate="true"
+                                 process="@this input-r input-x input-y" update="pointsData" ajax="true"
+                                 oncomplete="drawLastAddedPoint('pointsData_data',checkedRadius)" icon="pi pi-arrow-circle-up">
+                </p:commandButton>
+            </h:form>
+
+        </td>
+        <td style=" display: block;">
+            <p:dataTable id="pointsData" class="poitsData" var="points" value="#{pointsManager.PointsList()}"
+                         scrollHeight="600" scrollable="true" rowIndexVar="rowInd" tableStyle="text-align: center;">
+                <p:column width="20">
+                    <h:outputText value="#{rowInd+1}"/>
+                </p:column>
+
+                <p:column headerText="X">
+                    <h:outputText value="#{points.x}" id="X"></h:outputText>
+                </p:column>
+
+                <p:column headerText="Y">
+                    <h:outputText value="#{points.y}" id="Y"></h:outputText>
+                </p:column>
+
+                <p:column headerText="R">
+                    <h:outputText value="#{points.r}" id="R"></h:outputText>
+                </p:column>
+
+                <p:column headerText="Check">
+                    <h:outputText value="#{points.isInArea}" id="check"></h:outputText>
+                </p:column>
+
+            </p:dataTable>
+
+            <h:form>
+                <p:commandButton update="pointsData" value="очистить историю" ajax="true"
+                                 action="#{pointsManager.removeAllPoints()}"
+                                 styleClass=".button" oncomplete="drawCanwas('canvas',checkedRadius)" icon="pi pi-trash"></p:commandButton>
+            </h:form>
+
+        </td>
+    </tr>
+</table>
+</body>
+</html>
